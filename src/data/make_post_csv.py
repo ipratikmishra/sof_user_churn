@@ -10,14 +10,15 @@ def getvalueofnode(node):
 def users():
     """ Convert PostHistory.xml to pandas dataframe """
 
-    parsed_xml = et.parse("/home/kick7/Desktop/projects/sml/fp/sof_user_churn/data/raw/Posts.xml")
-    dfcols = ['OwnerUserId','PostTypeId', 'CreationDate', 'Score','LastEditorUserId','LastEditDate','LastActivityDate','CommentCount']
+    parsed_xml = et.parse("../../data/raw/Posts.xml")
+    dfcols = ['Id','OwnerUserId','PostTypeId', 'CreationDate', 'Score','LastEditorUserId','LastEditDate','LastActivityDate','CommentCount']
     df_xml = pd.DataFrame(columns=dfcols)
     i=0
     for node in parsed_xml.getroot():
         if i%10000==0:
             print(i,df_xml.shape)
         i+=1
+        Id=node.attrib.get('Id')
         OwnerUserId = node.attrib.get('OwnerUserId')
         PostTypeId = node.attrib.get('PostTypeId')
         CreationDate = node.attrib.get('CreationDate')
@@ -28,10 +29,10 @@ def users():
         CommentCount = node.attrib.get('CommentCount')
  
         df_xml = df_xml.append(
-            pd.Series([OwnerUserId,PostTypeId, CreationDate, Score,LastEditorUserId,LastEditDate,LastActivityDate,CommentCount], index=dfcols),
+            pd.Series([Id,OwnerUserId,PostTypeId, CreationDate, Score,LastEditorUserId,LastEditDate,LastActivityDate,CommentCount], index=dfcols),
             ignore_index=True)
  
     return df_xml
  
 posts_df_xml=users()
-posts_df_xml.to_csv("/home/kick7/Desktop/projects/sml/fp/sof_user_churn/data/processed/posts.csv",index=False)
+posts_df_xml.to_csv("../../data/processed/posts.csv",index=False)

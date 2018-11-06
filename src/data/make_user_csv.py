@@ -10,14 +10,15 @@ def getvalueofnode(node):
 def users():
     """ Convert PostHistory.xml to pandas dataframe """
 
-    parsed_xml = et.parse("/home/kick7/Desktop/projects/sml/fp/sof_user_churn/data/raw/Users.xml")
-    dfcols = ['AccountId', 'CreationDate', 'Reputation','Views','UpVotes','DownVotes','LastAccessDate']
+    parsed_xml = et.parse("../../data/raw/Users.xml")
+    dfcols = ['Id','AccountId','CreationDate', 'Reputation','Views','UpVotes','DownVotes','LastAccessDate']
     df_xml = pd.DataFrame(columns=dfcols)
     i=0
     for node in parsed_xml.getroot():
         if i%10000==0:
             print(i,df_xml.shape)
         i+=1
+        Id=node.attrib.get('Id')
         AccountId = node.attrib.get('AccountId')
         CreationDate = node.attrib.get('CreationDate')
         Reputation = node.attrib.get('Reputation')
@@ -27,11 +28,11 @@ def users():
         LastAccessDate = node.attrib.get('LastAccessDate')
  
         df_xml = df_xml.append(
-            pd.Series([AccountId, CreationDate, Reputation,
+            pd.Series([Id,AccountId, CreationDate, Reputation,
                        Views,UpVotes,DownVotes,LastAccessDate], index=dfcols),
             ignore_index=True)
  
     return df_xml
  
 users_df_xml=users()
-users_df_xml.to_csv("/home/kick7/Desktop/projects/sml/fp/sof_user_churn/data/processed/users.csv",index=False)
+users_df_xml.to_csv("../../data/processed/users.csv",index=False)
