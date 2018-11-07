@@ -18,4 +18,18 @@ def get_accepted_answerer_reputation():
     accepted_answerer_rep = accepted_answerer_rep[accepted_answerer_rep.mean_reputation.notnull()]
     return accepted_answerer_rep
 
-print(get_accepted_answerer_reputation())
+
+def get_max_reputation_answerer():
+    meanOfmax_answerer_reputation_data = []
+    userId_list = users_df['Id']
+    for user in userId_list:
+        user_question_post_id_list = posts_df[(posts_df.OwnerUserId == user) & (posts_df.PostTypeId == 1)]['Id']
+        max_rep_list = []
+        for post_id in user_question_post_id_list:
+            answerer_user_id = posts_df[posts_df.ParentId == post_id]['OwnerUserId']
+            rept = users_df[users_df.Id.isin(answerer_user_id)].Reputation.max()
+            max_rep_list.append(rept)
+        if (len(max_rep_list) > 0):
+            meanOfmax_answerer_reputation_data.append({'userid': user, 'max_rep_answerer': np.mean(max_rep_list)})
+    meanOfMax_reputation_answerer = pd.DataFrame(meanOfmax_answerer_reputation_data)
+    return meanOfMax_reputation_answerer
